@@ -9,6 +9,7 @@ import {
 } from '@clerk/nextjs'
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { ModelProvider } from "@/providers/model-provider";
 
 const poppins = Poppins({
   subsets: ["latin"], weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
@@ -40,6 +41,7 @@ export default function RootLayout({
               <UserButton />
             </SignedIn>
           </header>
+          <ModelProvider/>
           {children}
         </body>
       </html>
