@@ -6,19 +6,19 @@ import { useEffect } from "react";
 
 const SetupPage = () => {
 
-    const onOpen=useStoreModel((state)=>state.onOpen)
-    const isOpen=useStoreModel((state)=>state.isOpen)
+    const onOpen = useStoreModel((state) => state.onOpen)
+    const isOpen = useStoreModel((state) => state.isOpen)
 
-    useEffect(()=>{
-        if(!isOpen){
+    useEffect(() => {
+        if (!isOpen) {
             onOpen()
         }
-    },[isOpen,onOpen])
+    }, [isOpen, onOpen])
 
-    return ( 
-    <div className="">
-    </div> 
+    return (
+        <div className="">
+        </div>
     );
 }
- 
+
 export default SetupPage;
