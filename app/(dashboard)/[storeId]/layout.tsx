@@ -13,7 +13,7 @@ interface DashboardLayoutProps {
 const DashboardLayout = async ({ children, params }: DashboardLayoutProps) => {
 
     const { userId } = await auth()
-    const {storeId}= await params
+    const { storeId } = await params
 
     if (!userId) {
         redirect("/sign-in")
