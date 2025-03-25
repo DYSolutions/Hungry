@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
-
-
 const BillboardClient = () => {
 
     const params = useParams()
