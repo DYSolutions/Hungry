@@ -12,6 +12,6 @@ export interface Billboard {
     id: string,
     label: string,
     imageUrl: string,
-    createdAt: Timestamp
-    updatedAt: Timestamp
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
 }

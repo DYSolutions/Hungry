@@ -20,11 +20,11 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
 
     const data = (await getDoc(doc(db, "stores", storeId))).data() as Store
 
-    const store={
+    const store = {
         ...data,
-        id:data.id,
-        createdAt: data.createdAt.toDate().toISOString(), // Convert Timestamp to string
-        updatedAt: data.updatedAt.toDate().toISOString(), // Convert Timestamp to string
+        id: data.id,
+        createdAt: data.createdAt.toDate().toISOString(), 
+        updatedAt: data.updatedAt.toDate().toISOString(), 
     }
 
     if (!store || store.userId !== userId) {
@@ -34,7 +34,7 @@ const SettingsPage = async ({ params }: SettingsPageProps) => {
     return (
         <div className="flex-col">
             <div className="flex-1 space-y-5 p-8 pt-6">
-                <SettingsForm initizalData={store}/>
+                <SettingsForm initizalData={store} />
             </div>
         </div>
     );

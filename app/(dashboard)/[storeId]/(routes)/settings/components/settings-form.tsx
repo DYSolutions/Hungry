@@ -15,6 +15,7 @@ import AlertBox from "@/components/alert-box";
 import axios from "axios";
 import ApiAlert from "@/components/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
+import { Trash } from "lucide-react";
 
 
 interface SettingsFormProps {
@@ -38,7 +39,7 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
     const params = useParams()
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
-    const origin =useOrigin()
+    const origin = useOrigin()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -72,7 +73,7 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
             const response = await axios.delete(`/api/stores/${storeId}`)
             toast.success("Store deleted")
             if (response) {
-                router.push("/")
+                router.refresh()
             }
         } catch (error) {
             console.log("DELETE_STORE:", error)
@@ -89,7 +90,11 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
                 <AlertBox
                     title={"Are your want to delete this store?"}
                     description={"if you click yes the all information and data of this store are permanantly deleted in the database"}
-                    onSubmit={handleDeleteStore} />
+                    onSubmit={handleDeleteStore} >
+                    <Button variant="destructive" size="icon" style={{ cursor: "pointer" }}>
+                        <Trash className="h-4 w-4" />
+                    </Button>
+                </AlertBox>
             </div>
             <Separator />
             <Form {...form}>
@@ -111,8 +116,8 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
                     <Button disabled={isLoading} type="submit" className="cursor-pointer">Save changes</Button>
                 </form>
             </Form>
-            <Separator/>
-            <ApiAlert title={"NEXT_PUBLIC_API_URL"} description={`${origin}/${params.storeId}/settings`} variant={"public"}/>
+            <Separator />
+            <ApiAlert title={"NEXT_PUBLIC_API_URL"} description={`${origin}/${params.storeId}/settings`} variant={"public"} />
         </>
     );
 }

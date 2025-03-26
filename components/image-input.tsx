@@ -93,8 +93,7 @@ const ImageInput = ({ value, onChange, onRemove }: ImageInputProps) => {
 
         onRemove(imageUrl);
         const bucket = "multistoreapp";
-        value.pop()
-        // Extract the file path from the public URL
+
         const filePath = imageUrl.split(`${bucket}/`)[1]; // Extract path after the bucket name
 
         if (!filePath) {

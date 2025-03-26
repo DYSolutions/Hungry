@@ -9,23 +9,20 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button } from "./ui/button";
-import { Trash } from "lucide-react";
 
 
 interface AlertBoxProps {
     title: string,
     description: string,
-    onSubmit: () => void
+    onSubmit: () => void,
+    children: React.ReactNode
 }
 
-const AlertBox = ({ title, description, onSubmit }: AlertBoxProps) => {
+const AlertBox = ({ title, description, onSubmit, children }: AlertBoxProps) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="icon" style={{ cursor: "pointer" }}>
-                    <Trash className="h-4 w-4" />
-                </Button>
+                {children}
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>

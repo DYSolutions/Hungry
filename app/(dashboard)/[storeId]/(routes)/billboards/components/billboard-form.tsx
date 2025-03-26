@@ -11,14 +11,16 @@ import toast from "react-hot-toast";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-// import AlertBox from "@/components/alert-box";
 import axios from "axios";
 import { Billboard } from "@/types";
 import ImageInput from "@/components/image-input";
+import AlertBox from "@/components/alert-box";
+import { sb } from "@/lib/supbase";
+import { Trash } from "lucide-react";
 
 
 interface BillboardFormProps {
-    initizalData: Billboard
+    initizalData: Billboard | null
 }
 
 const formSchema = z.object({
@@ -55,16 +57,68 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
             toast.error("Enter the billboard name")
         }
 
+        if (initizalData) {
+            try {
+                const { storeId, billboardId } = params
+                setIsLoading(true)
+                console.log("Updating data:", data)
+                const response = await axios.patch(`/api/stores/${storeId}/billboards/${billboardId}`, data)
+                toast.success("Billboard updated")
+                if (response) {
+                    router.back()
+                } else {
+                    console.warn("Something went wrong");
+                }
+            } catch (error) {
+                toast.error("Something went wrong")
+                console.log(error)
+            } finally {
+                setIsLoading(false)
+            }
+
+        } else {
+            try {
+                const { storeId } = params
+                setIsLoading(true)
+                console.log("Uploded data:", data)
+                const response = await axios.post(`/api/stores/${storeId}/billboards`, data)
+                toast.success("Billboard created")
+                if (response) {
+                    router.back()
+                } else {
+                    console.warn("Something went wrong");
+                }
+            } catch (error) {
+                toast.error("Something went wrong")
+                console.log(error)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+    }
+
+    const handleDeleteBillboard = async () => {
+
+        const bucket = "multistoreapp";
+        const filePath = initizalData?.imageUrl.split(`${bucket}/`)[1]; // Extract path after the bucket name
+
+        if (!filePath) {
+            toast.error("Invalid file path");
+            return;
+        }
+
         try {
-            const { storeId } = params
             setIsLoading(true)
-            console.log("Uploded data:", data)
-            const response = await axios.post(`/api/stores/${storeId}/billboards`, data)
-            toast.success("Billboard created")
+            const { storeId, billboardId } = await params
+            const { error } = await sb.storage.from(bucket).remove([filePath]);
+            if (error) {
+                toast.error("Failed to delete image");
+                console.error("Delete error:", error);
+            }
+            const response = await axios.delete(`/api/stores/${storeId}/billboards/${billboardId}`)
+            toast.success("Billboard deleted")
             if (response) {
-                router.back()
-            } else {
-                console.warn("Something went wrong");
+                router.push(`/${storeId}/billboards`)
             }
         } catch (error) {
             toast.error("Something went wrong")
@@ -74,34 +128,21 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
         }
     }
 
-    // const handleDeleteStore = async () => {
-    //     try {
-    //         setIsLoading(true)
-    //         const { storeId } = await params
-    //         const response = await axios.delete(`/api/stores/${storeId}`)
-    //         toast.success("Store deleted")
-    //         if (response) {
-    //             router.push("/")
-    //         }
-    //     } catch (error) {
-    //         console.log("DELETE_STORE:", error)
-    //         toast.error("Something went wrong")
-    //     } finally {
-    //         setIsLoading(false)
-    //     }
-    // }
-
     return (
         <>
             <div className="flex items-center justify-center">
                 <Heading title={title} description={description} />
-                {/* {initizalData && (
+                {initizalData && (
                     <AlertBox
-                        title={"Are your want to delete this store?"}
+                        title={"Are your want to delete this billboard?"}
                         description={"if you click yes the all information and data of this store are permanantly deleted in the database"}
-                        onSubmit={handleDeleteStore}
-                    />
-                )} */}
+                        onSubmit={handleDeleteBillboard}
+                    >
+                        <Button variant="destructive" size="icon" style={{ cursor: "pointer" }}>
+                            <Trash className="h-4 w-4" />
+                        </Button>
+                    </AlertBox>
+                )}
             </div>
             <Separator />
             <Form {...form}>
