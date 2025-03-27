@@ -16,6 +16,7 @@ import axios from "axios";
 import ApiAlert from "@/components/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
 import { Trash } from "lucide-react";
+import { useLoader } from "@/hooks/use-loader";
 
 
 interface SettingsFormProps {
@@ -40,6 +41,7 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const origin = useOrigin()
+    const loader = useLoader()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -48,6 +50,7 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
+            loader.onStartLoader()
             const { storeId } = params
             setIsLoading(true)
             console.log("Updating data:", data)
@@ -63,11 +66,13 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
             console.log(error)
         } finally {
             setIsLoading(false)
+            loader.onStopLoader()
         }
     }
 
     const handleDeleteStore = async () => {
         try {
+            loader.onStartLoader()
             setIsLoading(true)
             const { storeId } = await params
             const response = await axios.delete(`/api/stores/${storeId}`)
@@ -80,6 +85,7 @@ const SettingsForm = ({ initizalData }: SettingsFormProps) => {
             toast.error("Something went wrong")
         } finally {
             setIsLoading(false)
+            loader.onStopLoader()
         }
     }
 

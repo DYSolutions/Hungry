@@ -14,6 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { sb } from "@/lib/supbase";
+import { useLoader } from "@/hooks/use-loader";
 
 interface CellActionProps {
     data: Billboard
@@ -23,6 +24,7 @@ const CellAction = ({ data }: CellActionProps) => {
 
     const router = useRouter()
     const params = useParams()
+    const loader = useLoader()
 
     const handleDeleteBillboard = async () => {
 
@@ -35,13 +37,14 @@ const CellAction = ({ data }: CellActionProps) => {
         }
 
         try {
+            loader.onStartLoader()
             const { storeId } = await params
+            const response = await axios.delete(`/api/stores/${storeId}/billboards/${data.id}`)
             const { error } = await sb.storage.from(bucket).remove([filePath]);
             if (error) {
                 toast.error("Failed to delete image");
                 console.error("Delete error:", error);
             }
-            const response = await axios.delete(`/api/stores/${storeId}/billboards/${data.id}`)
             toast.success("Billboard deleted")
 
             if (response) {
@@ -51,7 +54,7 @@ const CellAction = ({ data }: CellActionProps) => {
             toast.error("Something went wrong")
             console.log(error)
         } finally {
-
+            loader.onStopLoader()
         }
     }
 

@@ -17,6 +17,7 @@ import ImageInput from "@/components/image-input";
 import AlertBox from "@/components/alert-box";
 import { sb } from "@/lib/supbase";
 import { Trash } from "lucide-react";
+import { useLoader } from "@/hooks/use-loader";
 
 
 interface BillboardFormProps {
@@ -32,6 +33,7 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
 
     const params = useParams()
     const router = useRouter()
+    const loader = useLoader()
     const [isLoading, setIsLoading] = useState(false)
 
     const title = initizalData ? "Edit billboard" : "Create billbord"
@@ -48,17 +50,19 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
 
-
         if (data.imageUrl === "") {
             toast.error("Image not selected")
+            return
         }
 
         if (data.label === "") {
             toast.error("Enter the billboard name")
+            return
         }
 
         if (initizalData) {
             try {
+                loader.onStartLoader()
                 const { storeId, billboardId } = params
                 setIsLoading(true)
                 console.log("Updating data:", data)
@@ -74,10 +78,13 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
                 console.log(error)
             } finally {
                 setIsLoading(false)
+                loader.onStopLoader()
             }
 
         } else {
             try {
+
+                loader.onStartLoader()
                 const { storeId } = params
                 setIsLoading(true)
                 console.log("Uploded data:", data)
@@ -93,6 +100,7 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
                 console.log(error)
             } finally {
                 setIsLoading(false)
+                loader.onStopLoader()
             }
         }
     }
@@ -108,14 +116,15 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
         }
 
         try {
+            loader.onStartLoader()
             setIsLoading(true)
             const { storeId, billboardId } = await params
+            const response = await axios.delete(`/api/stores/${storeId}/billboards/${billboardId}`)
             const { error } = await sb.storage.from(bucket).remove([filePath]);
             if (error) {
                 toast.error("Failed to delete image");
                 console.error("Delete error:", error);
             }
-            const response = await axios.delete(`/api/stores/${storeId}/billboards/${billboardId}`)
             toast.success("Billboard deleted")
             if (response) {
                 router.push(`/${storeId}/billboards`)
@@ -125,6 +134,7 @@ const BillboardForm = ({ initizalData }: BillboardFormProps) => {
             console.log(error)
         } finally {
             setIsLoading(false)
+            loader.onStopLoader()
         }
     }
 
