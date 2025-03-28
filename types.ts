@@ -15,3 +15,12 @@ export interface Billboard {
     createdAt: Timestamp | string,
     updatedAt: Timestamp | string
 }
+
+export interface Catagory {
+    id: string,
+    billboardId: string,
+    billboardName: string,
+    label: string,
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}
