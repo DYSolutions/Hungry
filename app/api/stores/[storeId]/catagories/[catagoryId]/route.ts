@@ -3,9 +3,6 @@ import { auth } from "@clerk/nextjs/server"
 import { deleteDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { NextResponse } from "next/server"
 
-
-
-
 export const PATCH = async (req: Request, { params }: { params: { storeId: string, catagoryId: string } }) => {
     try {
         const { userId } = await auth()
@@ -21,10 +18,10 @@ export const PATCH = async (req: Request, { params }: { params: { storeId: strin
         }
 
         if (!catagoryId) {
-            return new NextResponse("BillboardId not found", { status: 400 })
+            return new NextResponse("CatagoryId not found", { status: 400 })
         }
 
-        if (!billboardId || !billboardName || label) {
+        if (!billboardId || !billboardName || !label) {
             return new NextResponse("jsonData not found", { status: 400 })
         }
 

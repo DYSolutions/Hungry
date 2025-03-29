@@ -12,20 +12,23 @@ import {
 interface SelectScrollableProps {
     value: string;
     onChange: (value: string) => void;
-    data: string[];
+    data: {
+        billboardName: string,
+        billboardId: string
+    }[]
 }
 
 export function SelectScrollable({ value, data, onChange }: SelectScrollableProps) {
     return (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-[300px]">
                 <SelectValue placeholder="Select a billboard" />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    {data.map((billboard, index) => (
-                        <SelectItem key={index} value={billboard}>
-                            {billboard}
+                    {data.map((billboard) => (
+                        <SelectItem key={billboard.billboardId} value={billboard.billboardId}>
+                            {billboard.billboardName}
                         </SelectItem>
                     ))}
                 </SelectGroup>

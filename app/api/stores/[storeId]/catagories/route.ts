@@ -23,7 +23,7 @@ export const POST = async (req: Request, { params }: { params: { storeId: string
         }
 
         const catagoryData = {
-            billboardId:"",
+            billboardId,
             billboardName,
             label,
             createdAt: serverTimestamp()

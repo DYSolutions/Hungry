@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -24,7 +24,7 @@ interface CatagoryFormProps {
 }
 
 const formSchema = z.object({
-    billboardName: z.string().optional(),
+    billboardId: z.string().optional(),
     label: z.string().min(1),
 })
 
@@ -34,25 +34,35 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
     const router = useRouter()
     const loader = useLoader()
     const [isLoading, setIsLoading] = useState(false)
-    const [billboards, setBillboards] = useState<string[]>([])
+    const [billboards, setBillboards] = useState<{ billboardId: string; billboardName: string }[]>([]);
+    // const [billboard, setBillboard] = useState("");
 
     const title = initizalData ? "Edit catagory" : "Create catagory"
     const description = initizalData ? "Edit the catagory" : "Add new catagory"
     const action = initizalData ? "Save Changes" : "Create catagory"
 
+    const memoizedBillboards = useMemo(() => {
+        return billboards.map((billboard) => ({
+            billboardId: billboard.billboardId,
+            billboardName: billboard.billboardName
+        }));
+    }, [billboards]);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: initizalData || {
-            billboardName: "",
+            billboardId: "",
             label: ""
         }
     })
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-
-        if (data.billboardName === "") {
+        let name;
+        if (data.billboardId === "") {
             toast.error("Billboard not selected")
             return
+        } else {
+            name = billboards.find((doc) => doc.billboardId === data.billboardId)?.billboardName || "";
         }
 
         if (data.label === "") {
@@ -60,13 +70,19 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
             return
         }
 
+        const newData = {
+            label: data.label,
+            billboardId: data.billboardId,
+            billboardName: name
+        }
+
         if (initizalData) {
             try {
                 loader.onStartLoader()
                 const { storeId, catagoryId } = params
                 setIsLoading(true)
-                console.log("Updating data:", data)
-                const response = await axios.patch(`/api/stores/${storeId}/catagories/${catagoryId}`, data)
+                console.log("Updating data:", newData)
+                const response = await axios.patch(`/api/stores/${storeId}/catagories/${catagoryId}`, newData)
                 toast.success("Catagory updated")
                 if (response) {
                     router.back()
@@ -87,8 +103,8 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
                 loader.onStartLoader()
                 const { storeId } = params
                 setIsLoading(true)
-                console.log("Uploded data:", data)
-                const response = await axios.post(`/api/stores/${storeId}/catagories`, data)
+                console.log("Uploded data:", newData)
+                const response = await axios.post(`/api/stores/${storeId}/catagories`, newData)
                 toast.success("Catagory created")
                 if (response) {
                     router.back()
@@ -106,7 +122,6 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
     }
 
     const handleDeleteCatagory = async () => {
-
         try {
             loader.onStartLoader()
             setIsLoading(true)
@@ -127,25 +142,22 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
 
 
     useEffect(() => {
-        const fetchBillboardNames = async () => {
+        const fetchBillboards = async () => {
             try {
-                const { storeId } = await params;
+                const { storeId } = params;
                 if (!storeId) {
                     toast.error("Store not found");
                     return;
                 }
-
                 const { data } = await axios.get(`/api/stores/${storeId}/billboards`);
-                setBillboards(data.map((billboard: Billboard) => billboard.label));
-                console.log(data);
+                setBillboards(data.map((billboard: Billboard) => ({ billboardId: billboard.id, billboardName: billboard.label })));
             } catch (error) {
                 console.error("Error fetching billboards:", error);
+                toast.error("Failed to load billboards");
             }
         };
-
-        fetchBillboardNames()
-
-    }, [params, params.storeId])
+        fetchBillboards();
+    }, [params]);
 
     return (
         <>
@@ -168,7 +180,7 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-[20%]">
                     <FormField
                         control={form.control}
-                        name="billboardName"
+                        name="billboardId"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Select Billboard</FormLabel>
@@ -176,7 +188,7 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
                                     <SelectScrollable
                                         value={field.value ? field.value : ""}
                                         onChange={(name) => field.onChange(name)}
-                                        data={billboards}
+                                        data={memoizedBillboards}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -190,7 +202,7 @@ const CatagoryForm = ({ initizalData }: CatagoryFormProps) => {
                             <FormItem>
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
-                                    <Input disabled={isLoading} placeholder="your catagory name..." {...field} />
+                                    <Input className="w-[300px]" disabled={isLoading} placeholder="your catagory name..." {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
