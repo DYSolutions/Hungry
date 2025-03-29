@@ -7,14 +7,6 @@ import { format } from "date-fns"
 import { ArrowUpDown } from "lucide-react"
 import CellAction from "./cell-actions"
 
-export interface ColumnsProps {
-    id: string,
-    label: string,
-    imageUrl: string,
-    createdAt: string,
-    updatedAt: string
-}
-
 export const columns: ColumnDef<Billboard>[] = [
     {
         accessorKey: "imageUrl",

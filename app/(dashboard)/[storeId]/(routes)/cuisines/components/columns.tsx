@@ -1,28 +1,28 @@
 "use client"
+
+import { Cuisine } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { ArrowUpDown } from "lucide-react"
 import CellAction from "./cell-actions"
-import { Catagory } from "@/types"
 
-export const columns: ColumnDef<Catagory>[] = [
-
+export const columns: ColumnDef<Cuisine>[] = [
     {
-        accessorKey: "label",
+        accessorKey: "name",
         header: () => <div className="text-left text-gray-500 flex flex-row gap-2">
-            Catagory<ArrowUpDown size={'icon'} className="w-4 h-4" />
+            Name<ArrowUpDown size={'icon'} className="w-4 h-4" />
         </div>,
         cell: ({ row }) => {
-            return <div className="text-left">{row.original.label}</div>
+            return <div className="text-left">{row.original.name}</div>
         }
     },
     {
-        accessorKey: "billboardName",
+        accessorKey: "value",
         header: () => <div className="text-left text-gray-500 flex flex-row gap-2">
-            Billboard<ArrowUpDown size={'icon'} className="w-4 h-4" />
+            Value<ArrowUpDown size={'icon'} className="w-4 h-4" />
         </div>,
         cell: ({ row }) => {
-            return <div className="text-left">{row.original.billboardName}</div>
+            return <div className="text-left">{row.original.value}</div>
         }
     },
     {

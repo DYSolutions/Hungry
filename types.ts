@@ -24,3 +24,27 @@ export interface Catagory {
     createdAt: Timestamp | string,
     updatedAt: Timestamp | string
 }
+
+export interface Kitchen {
+    id: string,
+    name: string,
+    value: string,
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}
+
+export interface Size {
+    id: string,
+    name: string,
+    value: string,
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}
+
+export interface Cuisine {
+    id: string,
+    name: string,
+    value: string,
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}
