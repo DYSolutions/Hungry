@@ -11,7 +11,7 @@ interface BillboardProps {
 }
 
 const BillboardPage = async ({ params }: BillboardProps) => {
-    const { storeId, billboardId } = params;
+    const { storeId, billboardId } = await params;
 
     const docSnap = await getDoc(doc(db, "stores", storeId, "billboards", billboardId));
     const data = docSnap.data();

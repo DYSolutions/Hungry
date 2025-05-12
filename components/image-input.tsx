@@ -94,7 +94,9 @@ const ImageInput = ({ value, onChange, onRemove }: ImageInputProps) => {
         onRemove(imageUrl);
         const bucket = "multistoreapp";
 
-        const filePath = imageUrl.split(`${bucket}/`)[1]; // Extract path after the bucket name
+        const file = imageUrl.split(`${bucket}/`)[1]; // Extract path after the bucket name
+        const filePath = decodeURIComponent(file);
+        console.log("Deleting filePath:", filePath);
 
         if (!filePath) {
             toast.error("Invalid file path");

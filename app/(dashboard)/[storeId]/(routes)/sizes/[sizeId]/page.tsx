@@ -11,7 +11,7 @@ interface SizeProps {
 }
 
 const SizePage = async ({ params }: SizeProps) => {
-    const { storeId, sizeId } = params;
+    const { storeId, sizeId } = await params;
 
     const docSnap = await getDoc(doc(db, "stores", storeId, "sizes", sizeId));
     const data = docSnap.data();

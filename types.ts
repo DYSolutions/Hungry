@@ -48,3 +48,20 @@ export interface Cuisine {
     createdAt: Timestamp | string,
     updatedAt: Timestamp | string
 }
+
+export interface Product {
+    id: string,
+    name: string,
+    images: {
+        url: string;
+    }[];
+    price: string,
+    isFeatured: boolean,
+    isArchived: boolean,
+    size: string,
+    kitchen: string,
+    category: string,
+    cuisine: string,
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}

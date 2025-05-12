@@ -29,7 +29,7 @@ const DashboardLayout = async ({ children, params }: DashboardLayoutProps) => {
 
     const store = storeSnap.docs[0]?.data() as Store | undefined;
 
-    console.log("check", store)
+    // console.log("check", store)
 
     if (!store) {
         redirect("/")
