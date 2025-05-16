@@ -33,10 +33,10 @@ const formSchema = z.object({
     images: z.object({ url: z.string() }).array().nonempty("At least one image is required"),
     isFeatured: z.boolean().default(false).optional(),
     isArchived: z.boolean().default(false).optional(),
-    size: z.string().min(1),
-    kitchen: z.string().min(1),
-    category: z.string().min(1),
-    cuisine: z.string().min(1),
+    size: z.string().optional(),
+    kitchen: z.string().optional(),
+    category: z.string().optional(),
+    cuisine: z.string().optional(),
 })
 
 const ProductForm = ({ initizalData }: ProductFormProps) => {
