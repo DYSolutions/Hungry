@@ -62,6 +62,59 @@ export interface Product {
     kitchen: string,
     category: string,
     cuisine: string,
+    serves?: number,
     createdAt: Timestamp | string,
     updatedAt: Timestamp | string
+}
+
+export interface User {
+    id: string,
+    clerkUserId: string,
+    userName: string,
+    userEmail: string,
+    isAdmin: boolean,
+    isActive: boolean,
+    shippingAddress?: Address,
+    soldProducts: Order[],
+    cartProducts: Product[],
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}
+
+export interface Order {
+    id: string,
+    userId: string,
+    // status: "PENDING" | "COMPLETED" | "CANCELLED" | "DELIVERED" | "DELIVERING",
+    status: {
+        name: "PENDING",
+        color: "bg-yellow-500"
+    } | {
+        name: "COMPLETED",
+        color: "bg-green-500"
+    } | {
+        name: "CANCELED",
+        color: "bg-red-500"
+    } | {
+        name: "DELIVERED",
+        color: "bg-blue-500"
+    } | {
+        name: "DELIVERING",
+        color: "bg-gray-500"
+    },
+    shippingAddress: Address,
+    orderItems: Product[],
+    totalPrice: number,
+    paymentMethod: string,
+    createdAt: Timestamp | string,
+    updatedAt: Timestamp | string
+}
+
+export interface Address {
+    shippingAddress: string,
+    shippingCity: string,
+    shippingCode: string,
+    shippingCountry: string,
+    shippingPhone: string,
+    shippingName: string,
+    shippingEmail: string,
 }
