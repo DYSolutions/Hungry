@@ -4,10 +4,6 @@ import { auth } from "@clerk/nextjs/server"
 import { collection, doc, getDocs } from "firebase/firestore"
 import { NextResponse } from "next/server"
 
-
-
-
-
 export const GET = async (req: Request, { params }: { params: { storeId: string } }) => {
 
     try {
